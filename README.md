@@ -1,13 +1,17 @@
 # XRDragTableView
 a tableView which can sequence by drag cell
+
 一个可以通过长按来拖动cell进行排序与分组的tableView
+
+实现原理[请看这里](http://www.jianshu.com/p/cffd35628442)
 ______
 
 
 #使用步骤
 ###导入
 将XRDragTableView文件夹中的所有文件添加到项目中
-或通过cocoapods导入 pod 'XRDragTableView'
+
+或通过cocoapods导入  pod 'XRDragTableView'
 
 ###使用
 1.导入头文件 XRDragTableView.h
