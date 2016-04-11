@@ -37,7 +37,7 @@
 @property (nonatomic, assign) CGFloat scrollSpeed;
 
 /**
- *  所有cell恢复到之前的位置
+ *  所有cell恢复到拖动之前的位置
  */
 - (void)resetCellLocation;
 @end

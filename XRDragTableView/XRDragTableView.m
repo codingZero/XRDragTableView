@@ -37,6 +37,7 @@ typedef enum {
 
 - (void)setDataArray:(NSMutableArray *)dataArray {
     _dataArray = dataArray;
+    //将原始数组copy一份，便于以后的复原操作
     _originalArray = [dataArray mutableCopy];
     if (_isGroup) {
         for (int i = 0; i < dataArray.count; i++) {
@@ -106,11 +107,13 @@ typedef enum {
 }
 
 - (BOOL)isScrollToEdge {
+    //imageView拖动到tableView顶部，且tableView没有滚动到最上面
     if ((CGRectGetMaxY(self.cellImageView.frame) > self.contentOffset.y + self.frame.size.height - self.contentInset.bottom) && (self.contentOffset.y < self.contentSize.height - self.frame.size.height + self.contentInset.bottom)) {
         self.autoScroll = AutoScrollDown;
         return YES;
     }
     
+    //imageView拖动到tableView底部，且tableView没有滚动到最下面
     if ((self.cellImageView.frame.origin.y < self.contentOffset.y + self.contentInset.top) && (self.contentOffset.y > -self.contentInset.top)) {
         self.autoScroll = AutoScrollUp;
         return YES;
@@ -126,16 +129,20 @@ typedef enum {
 
 
 - (void)scrollTableView{
+    //如果已经滚动到最上面或最下面，则停止定时器并返回
     if ((_autoScroll == AutoScrollUp && self.contentOffset.y <= -self.contentInset.top)
         || (_autoScroll == AutoScrollDown && self.contentOffset.y >= self.contentSize.height - self.frame.size.height + self.contentInset.bottom)) {
             [_displayLink invalidate];
             return;
     }
     
+    //改变tableView的contentOffset，实现自动滚动
     CGFloat height = _autoScroll == AutoScrollUp? -_scrollSpeed : _scrollSpeed;
     [self setContentOffset:CGPointMake(0, self.contentOffset.y + height)];
+    //改变cellImageView的位置为手指所在位置
     _cellImageView.center = CGPointMake(_cellImageView.center.x, _cellImageView.center.y + height);
     
+    //滚动tableView的同时也要执行插入操作
     _toIndexPath = [self indexPathForRowAtPoint:_cellImageView.center];
     if (_toIndexPath && ![_toIndexPath isEqual:_fromIndexPath] && !self.isExchange)
         [self insertCell:_toIndexPath];
