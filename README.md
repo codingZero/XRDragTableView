@@ -3,6 +3,8 @@ a tableView which can sequence by drag cell
 
 一个可以通过长按来拖动cell进行排序与分组的tableView
 
+感谢[moayes/UDo](https://github.com/moayes/UDo)的思路
+
 实现原理[请看这里](http://www.jianshu.com/p/cffd35628442)
 ______
 
