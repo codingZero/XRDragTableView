@@ -62,11 +62,18 @@ typedef enum {
         self.cellImageView = [self createCellImageView:cell];
         
         //更改imageView的中心点为手指点击位置
-        CGPoint center = cell.center;
-        self.cellImageView.center = center;
-        
-        //隐藏要移动的cell
-        cell.hidden = YES;
+        __block CGPoint center = cell.center;
+        _cellImageView.center = center;
+        _cellImageView.alpha = 0.0;
+        [UIView animateWithDuration:0.25 animations:^{
+            center.y = point.y;
+            _cellImageView.center = center;
+            _cellImageView.transform = CGAffineTransformMakeScale(1.05, 1.05);
+            _cellImageView.alpha = 0.9;
+            cell.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            cell.hidden = YES;
+        }];
         
     } else if (sender.state == UIGestureRecognizerStateChanged){
         //根据手势的位置，获取手指移动到的cell的indexPath
@@ -102,7 +109,17 @@ typedef enum {
         //将隐藏的cell显示出来，并将imageView移除掉
         UITableViewCell *cell = [self cellForRowAtIndexPath:_fromIndexPath];
         cell.hidden = NO;
-        [self.cellImageView removeFromSuperview];
+        cell.alpha = 0;
+        [UIView animateWithDuration:0.25 animations:^{
+            
+            cell.alpha = 1;
+            _cellImageView.alpha = 0;
+            _cellImageView.transform = CGAffineTransformIdentity;
+            _cellImageView.center = cell.center;
+        } completion:^(BOOL finished) {
+            [self.cellImageView removeFromSuperview];
+            self.cellImageView = nil;
+        }];
     }
 }
 
@@ -210,7 +227,8 @@ typedef enum {
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     UIImageView *cellImageView = [[UIImageView alloc] initWithImage:image];
-    cellImageView.alpha = 0.8;
+    cellImageView.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
+    cellImageView.layer.shadowRadius = 5.0;
     [self addSubview:cellImageView];
     return cellImageView;
 }
